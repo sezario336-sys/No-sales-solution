@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etsy Audit Pro - Free Store Performance & SEO Analyzer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Adsterra Social Bar Script -->
+    <script data-cfasync="false" src="https://brijmohan.org/14/4f026a9b6f6ff7b8f93857fa964d7f81"></script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background: #0b0f19; color: #f3f4f6; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
+        .hero { text-align: center; max-width: 700px; margin-bottom: 40px; }
+        .badge { background: rgba(56, 189, 248, 0.1); color: #38bdf8; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid rgba(56, 189, 248, 0.2); display: inline-block; margin-bottom: 15px; }
+        h1 { font-size: 38px; font-weight: 800; line-height: 1.2; margin-bottom: 15px; background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        p { color: #94a3b8; font-size: 16px; line-height: 1.6; }
+        
+        .audit-card { background: #151c2c; border: 1px solid #232d42; width: 100%; max-width: 650px; border-radius: 16px; padding: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .input-group { display: flex; gap: 10px; margin-bottom: 25px; flex-direction: column; }
+        @media(min-width: 500px) { .input-group { flex-direction: row; } }
+        input[type="text"] { flex: 1; padding: 16px; border-radius: 10px; border: 1px solid #2d3748; background: #0f172a; color: #fff; font-size: 15px; outline: none; transition: border 0.3s; }
+        input[type="text"]:focus { border-color: #f97316; }
+        button { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #fff; border: none; padding: 16px 28px; border-radius: 10px; font-weight: 700; font-size: 15px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4); }
+        
+        .results-container { margin-top: 30px; border-top: 1px solid #232d42; padding-top: 25px; }
+        .score-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; background: #0f172a; padding: 20px; border-radius: 12px; border: 1px solid #1e293b; }
+        .score-box { text-align: center; }
+        .score-num { font-size: 36px; font-weight: 800; color: #38bdf8; }
+        .score-label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .audit-section { margin-bottom: 20px; text-align: left; }
+        .audit-section h3 { font-size: 16px; color: #e2e8f0; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .issue-item { background: rgba(239, 68, 68, 0.08); border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 6px; margin-bottom: 10px; font-size: 14px; color: #fca5a5; }
+        .pass-item { background: rgba(16, 185, 129, 0.08); border-left: 4px solid #10b981; padding: 12px 16px; border-radius: 6px; margin-bottom: 10px; font-size: 14px; color: #6ee7b7; }
+        
+        /* Content Locker styling for revenue optimization */
+        .locker-overlay { background: rgba(15, 23, 42, 0.95); border: 2px dashed #f97316; padding: 25px; border-radius: 14px; text-align: center; margin-top: 20px; }
+        .unlock-btn { display: inline-block; background: #f97316; color: #fff; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 700; margin-top: 12px; transition: 0.3s; }
+        .unlock-btn:hover { background: #dd6b20; }
+        
+        .error-msg { background: #7f1d1d; color: #fca5a5; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <span class="badge">PRO ESTY AUDIT TOOL</span>
+        <h1>Analyze Your Etsy Store & Boost Sales</h1>
+        <p>Get a comprehensive SEO, conversion, and performance audit for your Etsy shop in seconds.</p>
+    </div>
+
+    <div class="audit-card">
+        {% if error %}
+            <div class="error-msg">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST">
+            <div class="input-group">
+                <input type="text" name="shop_url" placeholder="Paste Etsy Shop URL or Shop Name (e.g. VintageCrafts)" value="{{ shop_name or '' }}" required>
+                <button type="submit">Analyze Shop</button>
+            </div>
+        </form>
+
+        {% if audit %}
+            <div class="results-container">
+                <div class="score-header">
+                    <div>
+                        <h2 style="font-size:20px;">{{ audit.shop_name }}</h2>
+                        <span style="font-size:13px; color:#94a3b8;">Status: {{ audit.status_text }}</span>
+                    </div>
+                    <div class="score-box">
+                        <div class="score-num" style="color: {{ audit.score_color }};">{{ audit.score }}/100</div>
+                        <div class="score-label">Overall Health</div>
+                    </div>
+                </div>
+
+                <div class="audit-section">
+                    <h3>⚠️ Critical Errors & Missing Optimization</h3>
+                    {% for issue in audit.issues %}
+                        <div class="issue-item">❌ {{ issue }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="audit-section">
+                    <h3>✅ Passed Checks</h3>
+                    {% for pass in audit.passes %}
+                        <div class="pass-item">✔ {{ pass }}</div>
+                    {% endfor %}
+                </div>
+
+                <!-- Adsterra Content Locker Gate -->
+                <div class="locker-overlay">
+                    <h3 style="color:#fff; font-size:18px;">🔒 Unlock Full SEO Keyword & Action Plan</h3>
+                    <p style="font-size:13px; margin-top:6px;">Complete 1 quick sponsor interaction to download your PDF Audit Report.</p>
+                    <a href="https://auctionr.org" target="_blank" class="unlock-btn" onclick="showFullReport()">
+                        Unlock Actionable Fixes 🔓
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Adsterra Popunder Script placed right before ending body -->
+    <script data-cfasync="false" src="https://ahuramazda.org/1/c1560c5355ed78584a0bf9c99e4493a6"></script>
+    
+    <script>
+        function showFullReport() {
+            // Optional JS trigger for locker execution
+        }
+    </script>
+</body>
+  </html>
